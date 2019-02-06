@@ -22,17 +22,13 @@ namespace BusinessSolutionsLayer.Models
                 .ForMember(x => x.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(x => x.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(x => x.Login, opt => opt.MapFrom(src => src.Login))
-                .ForMember(x => x.Role, opt => opt.MapFrom(src => src.Role.Id))
-                .ForMember(x => x.Hash, opt => opt.MapFrom(src => src.Hash))
-                .ForMember(x => x.Salt, opt => opt.MapFrom(src => src.Salt));
+                .ForMember(x => x.Role, opt => opt.MapFrom(src => src.Role.Id));
 
             CreateMap<User, UserData>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(x => x.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(x => x.Login, opt => opt.MapFrom(src => src.Login))
-                .ForMember(x => x.Role, opt => opt.MapFrom(src => new RoleData() { Id = (int)src.Role }))
-                .ForMember(x => x.Hash, opt => opt.MapFrom(src => src.Hash))
-                .ForMember(x => x.Salt, opt => opt.MapFrom(src => src.Salt));
+                .ForMember(x => x.Role, opt => opt.MapFrom(src => new RoleData() { Id = (int)src.Role }));
         }
     }
 
@@ -44,5 +40,14 @@ namespace BusinessSolutionsLayer.Models
                 .ForMember(x => x.DueDate, opt => opt.MapFrom(src => src.DueDate))
                 .ForMember(x => x.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(x => x.CreateBy, opt => opt.MapFrom(src => src.CreateBy));
+    }
+
+    public class SessionProfile : Profile
+    {
+        public SessionProfile() => CreateMap<SessionData, Session>()
+            .ForMember(x => x.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(x => x.User, opt => opt.MapFrom(src => src.User))
+            .ForMember(x => x.ExperationTime, opt => opt.MapFrom(src => src.ExperationTime))
+            .ForMember(x => x.CreatingTime, opt => opt.MapFrom(src => src.CreatingTime));
     }
 }

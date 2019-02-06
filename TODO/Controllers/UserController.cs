@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BusinessSolutionsLayer.Models;
 using BusinessSolutionsLayer.Services;
+using BusinessSolutionsLayer.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,14 @@ namespace TODO.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public IUsersService usersService;
+        private readonly IUsersService usersService;
+        private readonly ISessionService sessionService;
 
-        public UserController(IUsersService usersService) => this.usersService = usersService;
+        public UserController(IUsersService usersService, ISessionService sessionService)
+        {
+            this.usersService = usersService;
+            this.sessionService = sessionService;
+        }
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -26,7 +32,7 @@ namespace TODO.Controllers
             {
                 return Authorize(user);
             }
-            return Ok("Auth Failed");
+            return new ForbidResult();
         }
 
         [AllowAnonymous]
@@ -39,12 +45,16 @@ namespace TODO.Controllers
 
         private IActionResult Authorize(User user)
         {
+            var session = sessionService.Create(user, DateTime.Now.AddMinutes(25));
+
             var option = new CookieOptions()
             {
-                Expires = DateTime.Now.AddMinutes(25)
+                Expires = session.ExperationTime
             };
-            HttpContext.Response.Cookies.Append("UserName", user.Login, option);
-            HttpContext.Response.Cookies.Append("UserSignature", usersService.GetSignature(user.Login), option);
+
+            HttpContext.Response.Cookies.Append(CookiesKeys.ID, session.User.Id.ToString(), option);
+            HttpContext.Response.Cookies.Append(CookiesKeys.Signature, session.Id.ToString(), option);
+
             return Ok();
         }
     }

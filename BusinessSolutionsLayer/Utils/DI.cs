@@ -1,4 +1,6 @@
-﻿using BusinessSolutionsLayer.Services;
+﻿using BusinessSolutionsLayer.Repository;
+using BusinessSolutionsLayer.Services;
+using DataAccessLayer.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,8 +14,9 @@ namespace BusinessSolutionsLayer
         {
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ICrytpoService, CrytpoService>();
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<ITaskRepository, TaskRepository>();
+            services.AddTransient<ISessionService, SessionService>();
+            services.AddTransient<ITaskService, TaskService>();
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
         }
     }
 }

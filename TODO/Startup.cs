@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using BusinessSolutionsLayer;
 using BusinessSolutionsLayer.Models;
+using DataAccessLayer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 
 namespace TODO
 {
@@ -24,12 +25,16 @@ namespace TODO
         {
             DI.Inject(services);
 
+            services.AddTransient<IApplicationContextFactory, ApplicationContextFactory>();
+            
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
                 options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Lax; // for Cross-Site 
             });
+
             services.AddAutoMapper(options => options.AddProfiles(typeof(RoleProfile).Assembly));
+
             services.AddMvc(options =>
             {
                 options.Filters.Add<AuthFilter>();

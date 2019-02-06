@@ -11,6 +11,8 @@ namespace DataAccessLayer
 
         public DbSet<TaskData> Tasks { get; set; }
 
+        public DbSet<SessionData> Sessions { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=localhost;Database=TODO;Trusted_Connection=True;");
@@ -21,6 +23,7 @@ namespace DataAccessLayer
             builder.Entity<UserData>().HasIndex(u => u.Email).IsUnique();
             builder.Entity<UserData>().HasIndex(u => u.Login).IsUnique();
             builder.Entity<RoleData>().HasIndex(u => u.Name).IsUnique();
+            builder.Entity<SessionData>().Property(x => x.Id).IsRequired().ValueGeneratedNever();
         }
     }
 }

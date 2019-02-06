@@ -5,46 +5,57 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using BusinessSolutionsLayer.Repository;
+using DataAccessLayer.Models;
 
 namespace BusinessSolutionsLayer.Services
 {
     public class UsersService : IUsersService
     {
-        private readonly IUserRepository userRepository;
+        private readonly IRepository<UserData> userRepository;
+
+        private readonly IRepository<RoleData> roleRepository;
 
         private readonly ICrytpoService crytpoService;
 
-        public UsersService(IUserRepository userRepository, ICrytpoService crytpoService)
+        private readonly IMapper mapper;
+
+        public UsersService(IRepository<UserData> userRepository, IRepository<RoleData> roleRepository, ICrytpoService crytpoService, IMapper mapper)
         {
             this.userRepository = userRepository;
+            this.roleRepository = roleRepository;
             this.crytpoService = crytpoService;
+            this.mapper = mapper;
         }
 
         public User AddUser(User user)
         {
-            user.Role = RoleId.User;
-            user.Salt = crytpoService.GenerateSalt(150);
-            user.Hash = crytpoService.GetHash(user.Password + user.Salt);
-            userRepository.Add(user);
+            var userData = new UserData()
+            {
+                Login = user.Login,
+                Email = user.Email,
+                Role = roleRepository.Get(x => x.Id == (int)RoleId.User).First(),
+                Salt = crytpoService.GenerateSalt(150)
+            };
 
-            return user;
+            userData.Hash = crytpoService.GetHash(user.Password + userData.Salt);
+            
+            return mapper.Map<User>(userRepository.Add(userData));
         }
 
-        public string GetSignature(string login)
+        public User GetById(Guid id)
         {
-            var user = userRepository.Get(x => x.Login.Equals(login) || x.Email.Equals(login))
-                .FirstOrDefault();
-
-            return crytpoService.GetHash(user.Login + user.Salt);
+            return mapper.Map<User>(userRepository.Get(x => x.Id == id).First());
         }
 
         public bool IdentUser(User user)
         {
-            user = userRepository.Get(x => x.Login.Equals(user.Login) || x.Email.Equals(user.Email))
-                .FirstOrDefault();
+            var userData = userRepository.Get(x => x.Login.Equals(user.Login, StringComparison.InvariantCultureIgnoreCase)
+            || x.Email.Equals(user.Email, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
 
-            if (user != null && crytpoService.GetHash(user.Password + user.Salt) == user.Hash)
+            if (userData != null && crytpoService.GetHash(user.Password + userData.Salt) == userData.Hash)
             {
+                user.Id = userData.Id;
                 return true;
             }
 
@@ -53,14 +64,7 @@ namespace BusinessSolutionsLayer.Services
 
         public void UpdateUser(User user)
         {
-            try
-            {
-                userRepository.Update(user);
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
+            userRepository.Update(mapper.Map<UserData>(user));
         }
     }
 }

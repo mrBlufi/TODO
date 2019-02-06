@@ -9,10 +9,10 @@ namespace BusinessSolutionsLayer.Services
     {
         bool IdentUser(User user);
 
+        User GetById(Guid id);
+
         void UpdateUser(User user);
 
         User AddUser(User user);
-
-        string GetSignature(string login);
     }
 }
