@@ -14,20 +14,23 @@ namespace TODO.Controllers
     public class TaskController : ControllerBase
     {
         private readonly ITaskService taskService;
+        private readonly IFileService fileService;
 
-        public TaskController(ITaskService taskService)
+        public TaskController(ITaskService taskService, IFileService fileService)
         {
             this.taskService = taskService;
+            this.fileService = fileService;
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 180)]
         public IActionResult Get()
         {
             return Ok(taskService.GetAll());
         }
 
-
         [HttpGet("{title}")]
+        [ResponseCache(Duration = 60)]
         public IActionResult Get(string title)
         {
             return Ok(taskService.Get(title));
@@ -40,6 +43,38 @@ namespace TODO.Controllers
             var userId = Guid.Parse(ControllerContext.HttpContext.Request.Cookies[CookiesKeys.ID]);
             task = taskService.Add(userId, task);
             return Ok(task);
+        }
+
+        [AuthFilter(RoleId.Admin)]
+        [HttpPost]
+        [Route("api/task/import")]
+        [RequestSizeLimit(int.MaxValue)]
+        public async System.Threading.Tasks.Task<IActionResult> Import(IFormFile file)
+        {
+            var userId = Guid.Parse(ControllerContext.HttpContext.Request.Cookies[CookiesKeys.ID]);
+            string path;
+            using (var stream = file.OpenReadStream())
+            {
+                path = await fileService.SaveFileAsync(stream);
+            }
+
+            try
+            {
+                var count = await taskService.ImprotFromFileAsync(userId, path);
+                return Ok($"successfully added {count} tasks");
+            }
+            finally
+            {
+                fileService.DeleteFile(path);
+            }
+        }
+
+        [HttpGet("{title}/{description}/{duedate}")]
+        public IActionResult SqlInsert(string title, string description, string duedate)
+        {
+            taskService.SqlInjectionInsert(Guid.Parse(ControllerContext.HttpContext.Request.Cookies[CookiesKeys.ID]),
+                title, description, duedate);
+            return Ok();
         }
 
         [AuthFilter(RoleId.Admin)]

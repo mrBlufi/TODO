@@ -16,6 +16,7 @@ namespace BusinessSolutionsLayer
             services.AddTransient<ICrytpoService, CrytpoService>();
             services.AddTransient<ISessionService, SessionService>();
             services.AddTransient<ITaskService, TaskService>();
+            services.AddTransient<IFileService>(f => new FileService(@"D:\Temp"));
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
         }
     }

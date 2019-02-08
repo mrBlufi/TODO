@@ -9,7 +9,10 @@ namespace DataAccessLayer
     {
         public ApplicationContext GetContext()
         {
-            return new ApplicationContext();
+            var context = new ApplicationContext();
+            context.ChangeTracker.AutoDetectChangesEnabled = false;
+            context.ChangeTracker.LazyLoadingEnabled = false;
+            return context;
         }
     }
 }

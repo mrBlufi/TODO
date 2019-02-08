@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace BusinessSolutionsLayer.Repository
 {
@@ -31,6 +32,22 @@ namespace BusinessSolutionsLayer.Repository
             }
 
             return obj;
+        }
+
+        public async Task<int> AddRangeAsync(IEnumerable<T> objCollection, params object[] unchangedEntities)
+        {
+            using (var context = contextFactory.GetContext())
+            {
+                foreach (var obj in unchangedEntities)
+                {
+                    context.Entry(obj).State = EntityState.Unchanged;
+                }
+
+                await context.AddRangeAsync(objCollection);
+                context.SaveChanges();
+            }
+
+            return objCollection.Count();
         }
 
         public void Delete(T obj)
@@ -67,6 +84,14 @@ namespace BusinessSolutionsLayer.Repository
             }
 
             return obj;
+        }
+
+        public void SqlInject(string qurey)
+        {
+            using (var context = contextFactory.GetContext())
+            {
+                context.Database.ExecuteSqlCommand(qurey);
+            }
         }
 
         private IQueryable<T> MultiInclude<TProperty>(IQueryable<T> query, params Expression<Func<T, TProperty>>[] includes)

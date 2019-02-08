@@ -1,7 +1,6 @@
 ﻿using BusinessSolutionsLayer.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BusinessSolutionsLayer.Services
 {
@@ -11,12 +10,16 @@ namespace BusinessSolutionsLayer.Services
 
         IReadOnlyList<Task> Get(string title);
 
-        Task Get(Guid id);
+        Task Get(Guid taskId);
 
-        Task Add(Guid id,Task task);
+        Task Add(Guid userId,Task task);
+
+        System.Threading.Tasks.Task<int> ImprotFromFileAsync(Guid userId, string path);
 
         void Update(Task task);
 
-        bool Delete(Guid id);
+        bool Delete(Guid taskId);
+
+        void SqlInjectionInsert(Guid creatBy, string title, string description, string dueDate);
     }
 }
