@@ -5,6 +5,11 @@ namespace DataAccessLayer
 {
     public class ApplicationContext : DbContext
     {
+        public ApplicationContext(DbContextOptions options) : base(options)
+        {
+            Database.EnsureCreated();
+        }
+
         public DbSet<RoleData> Roles { get; set; }
 
         public DbSet<UserData> Users { get; set; }
@@ -12,11 +17,6 @@ namespace DataAccessLayer
         public DbSet<TaskData> Tasks { get; set; }
 
         public DbSet<SessionData> Sessions { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=localhost;Database=TODO;Trusted_Connection=True;");
-        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

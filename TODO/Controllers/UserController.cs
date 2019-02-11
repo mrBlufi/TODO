@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BusinessSolutionsLayer.Models;
+﻿using BusinessSolutionsLayer.Models;
 using BusinessSolutionsLayer.Services;
 using BusinessSolutionsLayer.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace TODO.Controllers
 {
@@ -39,8 +36,8 @@ namespace TODO.Controllers
         [HttpPost("signup")]
         public IActionResult SignUp([FromBody]User user)
         {
-            user = usersService.AddUser(user);
-            return Authorize(user);
+            usersService.AddUser(user);
+            return Authorize(usersService.Get(user.Login));
         }
 
         private IActionResult Authorize(User user)
@@ -55,7 +52,7 @@ namespace TODO.Controllers
             HttpContext.Response.Cookies.Append(CookiesKeys.ID, session.User.Id.ToString(), option);
             HttpContext.Response.Cookies.Append(CookiesKeys.Signature, session.Id.ToString(), option);
 
-            return Ok();
+            return LocalRedirect("~/api/task");
         }
     }
 }

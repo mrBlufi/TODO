@@ -1,7 +1,5 @@
 ﻿using BusinessSolutionsLayer.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BusinessSolutionsLayer.Services
 {

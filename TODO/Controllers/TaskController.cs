@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using BusinessSolutionsLayer.Models;
+﻿using BusinessSolutionsLayer.Models;
 using BusinessSolutionsLayer.Services;
 using BusinessSolutionsLayer.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace TODO.Controllers
 {
@@ -41,8 +39,8 @@ namespace TODO.Controllers
         public IActionResult Post([FromBody] Task task)
         {
             var userId = Guid.Parse(ControllerContext.HttpContext.Request.Cookies[CookiesKeys.ID]);
-            task = taskService.Add(userId, task);
-            return Ok(task);
+            taskService.Add(userId, task);
+            return Ok();
         }
 
         [AuthFilter(RoleId.Admin)]
@@ -61,7 +59,7 @@ namespace TODO.Controllers
             try
             {
                 var count = await taskService.ImprotFromFileAsync(userId, path);
-                return Ok($"successfully added {count} tasks");
+                return Ok();
             }
             finally
             {
@@ -92,9 +90,9 @@ namespace TODO.Controllers
         {
             if (taskService.Delete(id))
             {
-                return Ok("successfully deleted");
+                return Ok();
             }
-            return BadRequest("Somthing wrong");
+            return BadRequest();
         }
 
     }

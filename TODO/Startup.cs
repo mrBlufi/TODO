@@ -23,14 +23,17 @@ namespace TODO
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            DI.Inject(services);
+            DI.Inject(services, Configuration);
 
-            services.AddTransient<IApplicationContextFactory, ApplicationContextFactory>();
-            
+            services.AddTransient<IApplicationContextFactory>(x => new ApplicationContextFactory(
+                 new DbContextOptionsBuilder()
+                 .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                 .Options));
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
-                options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Lax; // for Cross-Site 
+                options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
             });
 
             services.AddAutoMapper(options => options.AddProfiles(typeof(RoleProfile).Assembly));

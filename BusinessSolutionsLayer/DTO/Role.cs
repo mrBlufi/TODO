@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using DataAccessLayer.Models;
-using System;
-
-namespace BusinessSolutionsLayer.Models
+﻿namespace BusinessSolutionsLayer.Models
 {
     public class Role
     {

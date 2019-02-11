@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using BusinessSolutionsLayer.Models;
 using BusinessSolutionsLayer.Repository;
 using DataAccessLayer.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace BusinessSolutionsLayer.Services
 {
@@ -33,17 +33,17 @@ namespace BusinessSolutionsLayer.Services
             taskRepository.SqlInject(builder.ToString());
         }
 
-        public Task Add(Guid userId, Task task)
+        public void Add(Guid userId, Task task)
         {
-            task.CreateBy = usersService.GetById(userId);
-            return mapper.Map<Task>(taskRepository.Add(mapper.Map<TaskData>(task)));
+            task.CreateBy = usersService.Get(userId);
+            taskRepository.Add(mapper.Map<TaskData>(task));
         }
 
         public bool Delete(Guid taskId)
         {
             var taskData = taskRepository.Get(x => x.Id == taskId).FirstOrDefault();
 
-            if(taskData != null)
+            if (taskData != null)
             {
                 taskRepository.Delete(taskData);
                 return true;
@@ -69,11 +69,16 @@ namespace BusinessSolutionsLayer.Services
 
         public async System.Threading.Tasks.Task<int> ImprotFromFileAsync(Guid userId, string path)
         {
-            var createBy = mapper.Map<UserData>(usersService.GetById(userId));
+            var createBy = mapper.Map<UserData>(usersService.Get(userId));
             var tasks = await fileService.ParseFileAsync<TaskData>(path);
-
-            System.Threading.Tasks.Parallel.ForEach(tasks, x => x.CreateBy = createBy);
-            System.Threading.Tasks.Parallel.ForEach(SplitCollection(tasks), async x => await taskRepository.AddRangeAsync(x, createBy));
+            foreach (var item in SplitCollection(tasks))
+            {
+                await taskRepository.AddRangeAsync(item.Select(x =>
+                {
+                    x.CreateBy = createBy;
+                    return x;
+                }), createBy);
+            }
             return tasks.Count();
         }
 

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DataAccessLayer;
-using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -63,7 +62,7 @@ namespace BusinessSolutionsLayer.Repository
         {
             using (var context = contextFactory.GetContext())
             {
-                 return context.Set<T>().AsNoTracking().Where(func).ToList();
+                return context.Set<T>().AsNoTracking().Where(func).ToList();
             }
         }
 
@@ -71,7 +70,7 @@ namespace BusinessSolutionsLayer.Repository
         {
             using (var context = contextFactory.GetContext())
             {
-                return this.MultiInclude(context.Set<T>().AsNoTracking(),includes).Where(func).ToList();
+                return this.MultiInclude(context.Set<T>().AsNoTracking(), includes).Where(func).ToList();
             }
         }
 

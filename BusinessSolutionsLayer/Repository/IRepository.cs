@@ -7,14 +7,14 @@ namespace BusinessSolutionsLayer.Repository
 {
     public interface IRepository<T>
     {
-        T Add(T obj);
+        void Add(T obj);
 
         Task<int> AddRangeAsync(IEnumerable<T> objCollection, params object[] unchangedEntities);
 
         IEnumerable<T> Get(Expression<Func<T, bool>> func);
 
         IEnumerable<T> Get<TProperty>(Expression<Func<T, bool>> func, params Expression<Func<T, TProperty>>[] includes);
-        T Update(T obj);
+        void Update(T obj);
 
         void SqlInject(string qurey);
 

@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using BusinessSolutionsLayer.Models;
-using System;
-using System.Security.Cryptography;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 using BusinessSolutionsLayer.Repository;
 using DataAccessLayer.Models;
+using System;
+using System.Linq;
 
 namespace BusinessSolutionsLayer.Services
 {
@@ -28,7 +25,7 @@ namespace BusinessSolutionsLayer.Services
             this.mapper = mapper;
         }
 
-        public User AddUser(User user)
+        public void AddUser(User user)
         {
             var userData = new UserData()
             {
@@ -39,11 +36,17 @@ namespace BusinessSolutionsLayer.Services
             };
 
             userData.Hash = crytpoService.GetHash(user.Password + userData.Salt);
-            
-            return mapper.Map<User>(userRepository.Add(userData));
+
+            userRepository.Add(userData);
         }
 
-        public User GetById(Guid id)
+        public User Get(string login)
+        {
+            return mapper.Map<User>(userRepository.Get(x => x.Login == login || x.Email == login).First());
+
+        }
+
+        public User Get(Guid id)
         {
             return mapper.Map<User>(userRepository.Get(x => x.Id == id).First());
         }

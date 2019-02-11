@@ -17,8 +17,4 @@
     <ProjectReference Include="..\BusinessSolutionsLayer\BusinessSolutionsLayer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-
 </Project>

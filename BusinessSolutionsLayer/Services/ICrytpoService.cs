@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BusinessSolutionsLayer.Services
+﻿namespace BusinessSolutionsLayer.Services
 {
     public interface ICrytpoService
     {

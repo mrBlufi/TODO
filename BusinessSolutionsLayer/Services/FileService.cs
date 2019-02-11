@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessSolutionsLayer.Services
@@ -30,7 +29,7 @@ namespace BusinessSolutionsLayer.Services
             string json;
             using (var streamReader = new StreamReader(new FileStream(path, FileMode.Open)))
             {
-                json  = await streamReader.ReadToEndAsync();
+                json = await streamReader.ReadToEndAsync();
             }
             return JsonConvert.DeserializeObject<IReadOnlyCollection<T>>(json);
         }
@@ -38,9 +37,9 @@ namespace BusinessSolutionsLayer.Services
         public async Task<string> SaveFileAsync(Stream stream)
         {
             var path = Path.Combine(directory, Guid.NewGuid().ToString());
-            using(var fileStream = new FileStream(path, FileMode.Create))
+            using (var fileStream = new FileStream(path, FileMode.Create))
             {
-               await stream.CopyToAsync(fileStream);
+                await stream.CopyToAsync(fileStream);
             }
             return path;
         }

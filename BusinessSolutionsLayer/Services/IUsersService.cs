@@ -1,7 +1,5 @@
 ﻿using BusinessSolutionsLayer.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BusinessSolutionsLayer.Services
 {
@@ -9,10 +7,12 @@ namespace BusinessSolutionsLayer.Services
     {
         bool IdentUser(User user);
 
-        User GetById(Guid id);
+        User Get(Guid id);
+
+        User Get(string login);
 
         void UpdateUser(User user);
 
-        User AddUser(User user);
+        void AddUser(User user);
     }
 }

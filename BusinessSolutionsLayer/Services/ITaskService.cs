@@ -12,7 +12,7 @@ namespace BusinessSolutionsLayer.Services
 
         Task Get(Guid taskId);
 
-        Task Add(Guid userId,Task task);
+        void Add(Guid userId, Task task);
 
         System.Threading.Tasks.Task<int> ImprotFromFileAsync(Guid userId, string path);
 

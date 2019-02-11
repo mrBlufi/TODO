@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using BusinessSolutionsLayer.Models;
 using BusinessSolutionsLayer.Repository;
 using DataAccessLayer.Models;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 
 namespace BusinessSolutionsLayer.Services
 {
