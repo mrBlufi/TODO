@@ -58,7 +58,7 @@ namespace TODO.Controllers
 
             try
             {
-                var count = await taskService.ImprotFromFileAsync(userId, path);
+                var count = await taskService.ImportFromFileAsync(userId, path);
                 return Ok();
             }
             finally

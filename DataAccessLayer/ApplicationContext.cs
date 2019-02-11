@@ -7,6 +7,8 @@ namespace DataAccessLayer
     {
         public ApplicationContext(DbContextOptions options) : base(options)
         {
+            base.ChangeTracker.AutoDetectChangesEnabled = false;
+            base.ChangeTracker.LazyLoadingEnabled = false;
             Database.EnsureCreated();
         }
 

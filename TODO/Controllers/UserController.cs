@@ -12,10 +12,10 @@ namespace TODO.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUsersService usersService;
+        private readonly IUserService usersService;
         private readonly ISessionService sessionService;
 
-        public UserController(IUsersService usersService, ISessionService sessionService)
+        public UserController(IUserService usersService, ISessionService sessionService)
         {
             this.usersService = usersService;
             this.sessionService = sessionService;

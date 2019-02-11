@@ -9,7 +9,7 @@ namespace BusinessSolutionsLayer
     {
         public static void Inject(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<ICrytpoService, CrytpoService>();
             services.AddTransient<ISessionService, SessionService>();
             services.AddTransient<ITaskService, TaskService>();

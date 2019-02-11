@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace BusinessSolutionsLayer.Services
 {
-    public class UsersService : IUsersService
+    public class UserService : IUserService
     {
         private readonly IRepository<UserData> userRepository;
 
@@ -17,7 +17,7 @@ namespace BusinessSolutionsLayer.Services
 
         private readonly IMapper mapper;
 
-        public UsersService(IRepository<UserData> userRepository, IRepository<RoleData> roleRepository, ICrytpoService crytpoService, IMapper mapper)
+        public UserService(IRepository<UserData> userRepository, IRepository<RoleData> roleRepository, ICrytpoService crytpoService, IMapper mapper)
         {
             this.userRepository = userRepository;
             this.roleRepository = roleRepository;

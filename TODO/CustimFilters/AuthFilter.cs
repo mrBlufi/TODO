@@ -11,7 +11,6 @@ namespace TODO
 {
     public class AuthFilter : Attribute, IAuthorizationFilter
     {
-
         private readonly RoleId role;
 
         public AuthFilter(RoleId role = RoleId.User)

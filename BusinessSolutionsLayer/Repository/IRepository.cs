@@ -14,6 +14,7 @@ namespace BusinessSolutionsLayer.Repository
         IEnumerable<T> Get(Expression<Func<T, bool>> func);
 
         IEnumerable<T> Get<TProperty>(Expression<Func<T, bool>> func, params Expression<Func<T, TProperty>>[] includes);
+
         void Update(T obj);
 
         void SqlInject(string qurey);

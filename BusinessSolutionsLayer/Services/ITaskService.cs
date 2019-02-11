@@ -14,7 +14,7 @@ namespace BusinessSolutionsLayer.Services
 
         void Add(Guid userId, Task task);
 
-        System.Threading.Tasks.Task<int> ImprotFromFileAsync(Guid userId, string path);
+        System.Threading.Tasks.Task<int> ImportFromFileAsync(Guid userId, string path);
 
         void Update(Task task);
 

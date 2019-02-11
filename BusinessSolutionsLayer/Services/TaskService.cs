@@ -12,11 +12,11 @@ namespace BusinessSolutionsLayer.Services
     public class TaskService : ITaskService
     {
         private readonly IRepository<TaskData> taskRepository;
-        private readonly IUsersService usersService;
+        private readonly IUserService usersService;
         private readonly IFileService fileService;
         private readonly IMapper mapper;
 
-        public TaskService(IRepository<TaskData> taskRepository, IUsersService usersService, IFileService fileService, IMapper mapper)
+        public TaskService(IRepository<TaskData> taskRepository, IUserService usersService, IFileService fileService, IMapper mapper)
         {
             this.taskRepository = taskRepository;
             this.usersService = usersService;
@@ -67,7 +67,7 @@ namespace BusinessSolutionsLayer.Services
             return mapper.Map<IReadOnlyList<Task>>(taskRepository.Get(x => true, i => i.CreateBy));
         }
 
-        public async System.Threading.Tasks.Task<int> ImprotFromFileAsync(Guid userId, string path)
+        public async System.Threading.Tasks.Task<int> ImportFromFileAsync(Guid userId, string path)
         {
             var createBy = mapper.Map<UserData>(usersService.Get(userId));
             var tasks = await fileService.ParseFileAsync<TaskData>(path);

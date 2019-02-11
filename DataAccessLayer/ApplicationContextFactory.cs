@@ -14,8 +14,6 @@ namespace DataAccessLayer
         public ApplicationContext GetContext()
         {
             var context = new ApplicationContext(options);
-            context.ChangeTracker.AutoDetectChangesEnabled = false;
-            context.ChangeTracker.LazyLoadingEnabled = false;
             return context;
         }
     }

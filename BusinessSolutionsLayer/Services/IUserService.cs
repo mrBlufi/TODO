@@ -3,7 +3,7 @@ using System;
 
 namespace BusinessSolutionsLayer.Services
 {
-    public interface IUsersService
+    public interface IUserService
     {
         bool IdentUser(User user);
 
