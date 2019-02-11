@@ -9,7 +9,7 @@ namespace BusinessSolutionsLayer.Repository
     {
         void Add(T obj);
 
-        Task<int> AddRangeAsync(IEnumerable<T> objCollection, params object[] unchangedEntities);
+        Task<int> AddRangeAsync(IEnumerable<T> objCollection);
 
         IEnumerable<T> Get(Expression<Func<T, bool>> func);
 

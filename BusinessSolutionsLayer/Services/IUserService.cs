@@ -1,4 +1,5 @@
 ﻿using BusinessSolutionsLayer.Models;
+using DataAccessLayer.Models;
 using System;
 
 namespace BusinessSolutionsLayer.Services
@@ -14,5 +15,7 @@ namespace BusinessSolutionsLayer.Services
         void UpdateUser(User user);
 
         void AddUser(User user);
+
+        void Authorize(Guid userId);
     }
 }

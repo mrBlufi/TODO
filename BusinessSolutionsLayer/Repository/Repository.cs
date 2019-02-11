@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using BusinessSolutionsLayer.Services;
 using DataAccessLayer;
+using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,36 +16,32 @@ namespace BusinessSolutionsLayer.Repository
     {
 
         private readonly IMapper mapper;
-
         private readonly IApplicationContextFactory contextFactory;
+        private readonly ICurrentUser currentService;
 
-        public Repository(IApplicationContextFactory contextFactory, IMapper mapper)
+        public Repository(IApplicationContextFactory contextFactory, ICurrentUser currentService ,IMapper mapper)
         {
             this.contextFactory = contextFactory;
+            this.currentService = currentService;
             this.mapper = mapper;
         }
 
-        public T Add(T obj)
+        public void Add(T obj)
         {
             using (var context = contextFactory.GetContext())
             {
                 context.Entry(obj).State = EntityState.Added;
+                OnBeforeSaving(context);
                 context.SaveChanges();
             }
-
-            return obj;
         }
 
-        public async Task<int> AddRangeAsync(IEnumerable<T> objCollection, params object[] unchangedEntities)
+        public async Task<int> AddRangeAsync(IEnumerable<T> objCollection)
         {
             using (var context = contextFactory.GetContext())
             {
-                foreach (var obj in unchangedEntities)
-                {
-                    context.Entry(obj).State = EntityState.Unchanged;
-                }
-
                 await context.AddRangeAsync(objCollection);
+                OnBeforeSaving(context);
                 context.SaveChanges();
             }
 
@@ -74,15 +73,14 @@ namespace BusinessSolutionsLayer.Repository
             }
         }
 
-        public T Update(T obj)
+        public void Update(T obj)
         {
             using (var context = contextFactory.GetContext())
             {
                 context.Attach(obj).State = EntityState.Modified;
+                OnBeforeSaving(context);
                 context.SaveChanges();
             }
-
-            return obj;
         }
 
         public void SqlInject(string qurey)
@@ -102,5 +100,18 @@ namespace BusinessSolutionsLayer.Repository
 
             return query;
         }
+
+
+        private void OnBeforeSaving(ApplicationContext context)
+        {
+            foreach (var entry in this.GetEntries<IHasCreatedBy>(context, EntityState.Added))
+            {
+                entry.Entity.CreateBy = currentService.CurrentUser;
+            }
+
+        }
+
+        private IEnumerable<EntityEntry<TEntity>> GetEntries<TEntity>(ApplicationContext context, params EntityState[] entityStates) where TEntity : class 
+            => context.ChangeTracker.Entries<TEntity>().Where(entry => entityStates.Contains(entry.State));
     }
 }

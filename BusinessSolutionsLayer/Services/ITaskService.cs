@@ -12,14 +12,14 @@ namespace BusinessSolutionsLayer.Services
 
         Task Get(Guid taskId);
 
-        void Add(Guid userId, Task task);
+        void Add(Task task);
 
-        System.Threading.Tasks.Task<int> ImportFromFileAsync(Guid userId, string path);
+        System.Threading.Tasks.Task<int> ImportFromFileAsync(string path);
 
         void Update(Task task);
 
         bool Delete(Guid taskId);
 
-        void SqlInjectionInsert(Guid creatBy, string title, string description, string dueDate);
+        void SqlInjectionInsert(string title, string description, string dueDate);
     }
 }

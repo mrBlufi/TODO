@@ -40,6 +40,9 @@ namespace TODO
                 {
                     context.Result = new UnauthorizedResult();
                 }
+
+                var userService = context.HttpContext.RequestServices.GetService(typeof(IUserService)) as IUserService;
+                userService.Authorize(userId);
             }
             else
             {

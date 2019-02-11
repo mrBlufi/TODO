@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DataAccessLayer.Models
 {
-    public class TaskData
+    public class TaskData : IHasCreatedBy
     {
         public Guid Id { get; set; }
 

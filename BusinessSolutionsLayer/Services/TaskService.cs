@@ -12,30 +12,29 @@ namespace BusinessSolutionsLayer.Services
     public class TaskService : ITaskService
     {
         private readonly IRepository<TaskData> taskRepository;
-        private readonly IUserService usersService;
+        private readonly ICurrentUser currentUser;
         private readonly IFileService fileService;
         private readonly IMapper mapper;
 
-        public TaskService(IRepository<TaskData> taskRepository, IUserService usersService, IFileService fileService, IMapper mapper)
+        public TaskService(IRepository<TaskData> taskRepository, ICurrentUser currentService, IFileService fileService, IMapper mapper)
         {
             this.taskRepository = taskRepository;
-            this.usersService = usersService;
+            this.currentUser = currentService;
             this.fileService = fileService;
             this.mapper = mapper;
         }
 
-        public void SqlInjectionInsert(Guid creatBy, string title, string description, string dueDate)
+        public void SqlInjectionInsert(string title, string description, string dueDate)
         {
             var builder = new StringBuilder()
                 .AppendFormat("INSERT INTO [dbo].Tasks([Id],[CreateById],[Title],[Description],[DueDate]) VALUES('{0}','{1}','{2}','{3}','{4}')",
-                Guid.NewGuid().ToString(), creatBy.ToString(), title, description, dueDate);
+                Guid.NewGuid().ToString(), currentUser.CurrentUser.Id.ToString(), title, description, dueDate);
 
             taskRepository.SqlInject(builder.ToString());
         }
 
-        public void Add(Guid userId, Task task)
+        public void Add(Task task)
         {
-            task.CreateBy = usersService.Get(userId);
             taskRepository.Add(mapper.Map<TaskData>(task));
         }
 
@@ -67,17 +66,12 @@ namespace BusinessSolutionsLayer.Services
             return mapper.Map<IReadOnlyList<Task>>(taskRepository.Get(x => true, i => i.CreateBy));
         }
 
-        public async System.Threading.Tasks.Task<int> ImportFromFileAsync(Guid userId, string path)
+        public async System.Threading.Tasks.Task<int> ImportFromFileAsync(string path)
         {
-            var createBy = mapper.Map<UserData>(usersService.Get(userId));
             var tasks = await fileService.ParseFileAsync<TaskData>(path);
             foreach (var item in SplitCollection(tasks))
             {
-                await taskRepository.AddRangeAsync(item.Select(x =>
-                {
-                    x.CreateBy = createBy;
-                    return x;
-                }), createBy);
+                await taskRepository.AddRangeAsync(item);
             }
             return tasks.Count();
         }

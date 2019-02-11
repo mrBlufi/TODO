@@ -13,14 +13,17 @@ namespace BusinessSolutionsLayer.Services
 
         private readonly IRepository<RoleData> roleRepository;
 
+        private readonly ICurrentUser currentUser;
+
         private readonly ICrytpoService crytpoService;
 
         private readonly IMapper mapper;
 
-        public UserService(IRepository<UserData> userRepository, IRepository<RoleData> roleRepository, ICrytpoService crytpoService, IMapper mapper)
+        public UserService(IRepository<UserData> userRepository, IRepository<RoleData> roleRepository, ICurrentUser currentUser, ICrytpoService crytpoService, IMapper mapper)
         {
             this.userRepository = userRepository;
             this.roleRepository = roleRepository;
+            this.currentUser = currentUser;
             this.crytpoService = crytpoService;
             this.mapper = mapper;
         }
@@ -38,6 +41,14 @@ namespace BusinessSolutionsLayer.Services
             userData.Hash = crytpoService.GetHash(user.Password + userData.Salt);
 
             userRepository.Add(userData);
+        }
+
+        public void Authorize(Guid userId)
+        {
+            if(currentUser?.CurrentUser.Id != userId)
+            {
+                currentUser.SetUser(userRepository.Get(x => x.Id == userId).First());
+            }
         }
 
         public User Get(string login)

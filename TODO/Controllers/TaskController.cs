@@ -38,8 +38,7 @@ namespace TODO.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Task task)
         {
-            var userId = Guid.Parse(ControllerContext.HttpContext.Request.Cookies[CookiesKeys.ID]);
-            taskService.Add(userId, task);
+            taskService.Add(task);
             return Ok();
         }
 
@@ -49,7 +48,6 @@ namespace TODO.Controllers
         [RequestSizeLimit(int.MaxValue)]
         public async System.Threading.Tasks.Task<IActionResult> Import(IFormFile file)
         {
-            var userId = Guid.Parse(ControllerContext.HttpContext.Request.Cookies[CookiesKeys.ID]);
             string path;
             using (var stream = file.OpenReadStream())
             {
@@ -58,7 +56,7 @@ namespace TODO.Controllers
 
             try
             {
-                var count = await taskService.ImportFromFileAsync(userId, path);
+                var count = await taskService.ImportFromFileAsync(path);
                 return Ok();
             }
             finally
@@ -70,8 +68,7 @@ namespace TODO.Controllers
         [HttpGet("{title}/{description}/{duedate}")]
         public IActionResult SqlInsert(string title, string description, string duedate)
         {
-            taskService.SqlInjectionInsert(Guid.Parse(ControllerContext.HttpContext.Request.Cookies[CookiesKeys.ID]),
-                title, description, duedate);
+            taskService.SqlInjectionInsert(title, description, duedate);
             return Ok();
         }
 
